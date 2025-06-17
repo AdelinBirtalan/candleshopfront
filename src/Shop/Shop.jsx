@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import './Shop.css'; // Assuming you have CSS for styling
+import './Shop.css'; 
 
 function Shop() {
   const [products, setProducts] = useState([]);
@@ -11,7 +11,7 @@ function Shop() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('https://candles-backend.onrender.com/products');
+        const response = await axios.get('https://candles-backend-wals.onrender.com/');
         setProducts(response.data);
         setLoading(false);
       } catch (err) {
