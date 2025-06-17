@@ -35,7 +35,7 @@ function AdminPanel() {
       const fetchProducts = async () => {
         try {
           const response = await axios.get(
-            "http://localhost:5000/api/products"
+            "https://candles-backend-wals.onrender.com"
           );
           setProducts(response.data);
         } catch (error) {
@@ -65,9 +65,10 @@ function AdminPanel() {
       if (isEditing) {
         // Update product
         await axios.put(
-          `http://localhost:5000/api/products/${formData.id}`,
+          `https://candles-backend-wals.onrender.com/api/products/${formData.id}`,
           productData
         );
+
         setProducts(
           products.map((p) =>
             p.id === formData.id ? { ...p, ...productData } : p
@@ -78,7 +79,7 @@ function AdminPanel() {
       } else {
         // Add new product
         const response = await axios.post(
-          "http://localhost:5000/api/products",
+          "https://candles-backend-wals.onrender.com/api/products",
           productData
         );
         setProducts([...products, response.data]);
@@ -115,7 +116,9 @@ function AdminPanel() {
   // Handle delete button click
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`);
+      await axios.delete(
+        `https://candles-backend-wals.onrender.com/api/products/${id}`
+      );
       setProducts(products.filter((p) => p.id !== id));
       alert("Product deleted successfully!");
     } catch (error) {
