@@ -35,7 +35,7 @@ function AdminPanel() {
       const fetchProducts = async () => {
         try {
           const response = await axios.get(
-            "https://candles-backend-wals.onrender.com"
+            "https://candles-backend.onrender.com/products"
           );
           setProducts(response.data);
         } catch (error) {
