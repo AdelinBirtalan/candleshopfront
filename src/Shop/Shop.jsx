@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Shop.css';
 
+const API_BASE = 'https://candles-backend-wals.onrender.com/api/products';
+
 function Shop() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,12 +12,13 @@ function Shop() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('https://candles-backend.onrender.com/api/products');
+        const response = await axios.get(API_BASE);
         setProducts(response.data);
         setLoading(false);
       } catch (err) {
         setError('Failed to load products');
         setLoading(false);
+        console.error('Fetch products error:', err);
       }
     };
     fetchProducts();
