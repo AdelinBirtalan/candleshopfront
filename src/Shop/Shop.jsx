@@ -11,7 +11,7 @@ function Shop() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/products');
+        const response = await axios.get('https://candles-backend.onrender.com/products');
         setProducts(response.data);
         setLoading(false);
       } catch (err) {
