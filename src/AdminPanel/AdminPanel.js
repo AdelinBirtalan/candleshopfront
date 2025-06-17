@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import "./AdminPanel.css";
 
+const API_BASE = "https://candles-backend-wals.onrender.com/api/products";
+
 function AdminPanel() {
   const [products, setProducts] = useState([]);
   const [formData, setFormData] = useState({
@@ -17,11 +19,10 @@ function AdminPanel() {
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
 
-  // Handle login form submission
+  // Handle login
   const handleLogin = (e) => {
     e.preventDefault();
     if (password === "admin123") {
-      // Replace with your desired password
       setIsAuthenticated(true);
       setLoginError("");
     } else {
@@ -29,14 +30,12 @@ function AdminPanel() {
     }
   };
 
-  // Fetch products (only if authenticated)
+  // Fetch products
   useEffect(() => {
     if (isAuthenticated) {
       const fetchProducts = async () => {
         try {
-          const response = await axios.get(
-            "https://candles-backend.onrender.com/products"
-          );
+          const response = await axios.get(API_BASE);
           setProducts(response.data);
         } catch (error) {
           console.error("Error fetching products:", error);
@@ -46,12 +45,10 @@ function AdminPanel() {
     }
   }, [isAuthenticated]);
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle form submission (add or update product)
   const handleSubmit = async (e) => {
     e.preventDefault();
     const productData = {
@@ -61,14 +58,10 @@ function AdminPanel() {
       image: formData.image,
       stock: parseInt(formData.stock),
     };
+
     try {
       if (isEditing) {
-        // Update product
-        await axios.put(
-          `https://candles-backend-wals.onrender.com/products/api/products/${formData.id}`,
-          productData
-        );
-
+        await axios.put(`${API_BASE}/${formData.id}`, productData);
         setProducts(
           products.map((p) =>
             p.id === formData.id ? { ...p, ...productData } : p
@@ -77,15 +70,11 @@ function AdminPanel() {
         alert("Product updated successfully!");
         setIsEditing(false);
       } else {
-        // Add new product
-        const response = await axios.post(
-          "https://candles-backend-wals.onrender.com/products/api/products/",
-          productData
-        );
+        const response = await axios.post(API_BASE, productData);
         setProducts([...products, response.data]);
         alert("Product added successfully!");
       }
-      // Reset form
+
       setFormData({
         id: null,
         title: "",
@@ -100,7 +89,6 @@ function AdminPanel() {
     }
   };
 
-  // Handle edit button click
   const handleEdit = (product) => {
     setFormData({
       id: product.id,
@@ -113,12 +101,9 @@ function AdminPanel() {
     setIsEditing(true);
   };
 
-  // Handle delete button click
   const handleDelete = async (id) => {
     try {
-      await axios.delete(
-        `https://candles-backend-wals.onrender.com/products/api/products/${id}`
-      );
+      await axios.delete(`${API_BASE}/${id}`);
       setProducts(products.filter((p) => p.id !== id));
       alert("Product deleted successfully!");
     } catch (error) {
@@ -127,7 +112,6 @@ function AdminPanel() {
     }
   };
 
-  // Show login form if not authenticated
   if (!isAuthenticated) {
     return (
       <div className="admin-panel">
@@ -147,7 +131,6 @@ function AdminPanel() {
     );
   }
 
-  // Show admin panel if authenticated
   return (
     <div className="admin-panel">
       <h2>Admin Panel - Manage Products</h2>
@@ -155,7 +138,7 @@ function AdminPanel() {
         <input
           type="text"
           name="title"
-          placeholder="Title (e.g., Vanilla Glow)"
+          placeholder="Title"
           value={formData.title}
           onChange={handleInputChange}
           required
@@ -163,7 +146,7 @@ function AdminPanel() {
         <input
           type="number"
           name="price"
-          placeholder="Price (e.g., 15.99)"
+          placeholder="Price"
           value={formData.price}
           onChange={handleInputChange}
           step="0.01"
@@ -171,7 +154,7 @@ function AdminPanel() {
         />
         <textarea
           name="description"
-          placeholder="Description (e.g., A soothing vanilla-scented candle)"
+          placeholder="Description"
           value={formData.description}
           onChange={handleInputChange}
           required
@@ -179,7 +162,7 @@ function AdminPanel() {
         <input
           type="text"
           name="image"
-          placeholder="Image URL (e.g., https://imgur.com/abc123.jpg)"
+          placeholder="Image URL"
           value={formData.image}
           onChange={handleInputChange}
           required
@@ -187,7 +170,7 @@ function AdminPanel() {
         <input
           type="number"
           name="stock"
-          placeholder="Stock (e.g., 10)"
+          placeholder="Stock"
           value={formData.stock}
           onChange={handleInputChange}
           required
@@ -196,6 +179,7 @@ function AdminPanel() {
           {isEditing ? "Update Product" : "Add Product"}
         </button>
       </form>
+
       <h3>Product List</h3>
       <ul className="product-list">
         {products.map((product) => (
